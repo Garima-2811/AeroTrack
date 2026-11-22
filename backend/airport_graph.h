@@ -38,13 +38,16 @@ struct RouteResult
 class AirportGraph
 {
 public:
-    // Locations are corridor points. Their coordinates determine turn geometry.
+    // Locations are corridor points. Coordinates determine turn geometry;
+    // corridors store the weighted adjacency-list edges of the graph.
     bool addLocation(const std::string& name, double x, double y);
     bool addCorridor(const std::string& from,
                      const std::string& to,
                      double distanceMetres);
 
     std::vector<std::string> locationNames() const;
+    // Returns locations in start-to-destination order and readable route steps.
+    // Dijkstra minimizes corridor distance; all distances are illustrative.
     RouteResult shortestRoute(const std::string& start,
                               const std::string& destination) const;
 
@@ -60,6 +63,11 @@ private:
 
     std::size_t findLocation(const std::string& name) const;
     double corridorDistance(std::size_t from, std::size_t to) const;
+    bool isReachable(std::size_t start, std::size_t destination) const;
+    std::vector<std::size_t> reconstructRoute(
+        std::size_t start,
+        std::size_t destination,
+        const std::vector<std::size_t>& previous) const;
     std::vector<std::string> createInstructions(
         const std::vector<std::size_t>& route) const;
 };

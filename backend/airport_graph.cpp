@@ -121,6 +121,12 @@ bool AirportGraph::addCorridor(const std::string& from,
         distanceMetres <= 0.0)
         return false;
 
+    for (std::size_t index = 0; index < corridors_[fromIndex].size(); ++index)
+    {
+        if (corridors_[fromIndex][index].destination == toIndex)
+            return false;
+    }
+
     Corridor forward;
     forward.destination = toIndex;
     forward.distanceMetres = distanceMetres;
@@ -161,6 +167,58 @@ double AirportGraph::corridorDistance(std::size_t from,
             return adjacent[index].distanceMetres;
     }
     return 0.0;
+}
+
+bool AirportGraph::isReachable(std::size_t start,
+                               std::size_t destination) const
+{
+    std::vector<bool> visited(locations_.size(), false);
+    std::queue<std::size_t> pending;
+
+    visited[start] = true;
+    pending.push(start);
+
+    while (!pending.empty())
+    {
+        const std::size_t current = pending.front();
+        pending.pop();
+
+        if (current == destination)
+            return true;
+
+        const std::vector<Corridor>& adjacent = corridors_[current];
+        for (std::size_t index = 0; index < adjacent.size(); ++index)
+        {
+            const std::size_t neighbour = adjacent[index].destination;
+            if (!visited[neighbour])
+            {
+                visited[neighbour] = true;
+                pending.push(neighbour);
+            }
+        }
+    }
+
+    return false;
+}
+
+std::vector<std::size_t> AirportGraph::reconstructRoute(
+    std::size_t start,
+    std::size_t destination,
+    const std::vector<std::size_t>& previous) const
+{
+    std::vector<std::size_t> route;
+    for (std::size_t location = destination;
+         location != locations_.size();
+         location = previous[location])
+    {
+        route.push_back(location);
+        if (location == start)
+            break;
+    }
+
+    if (route.empty() || route.back() != start)
+        route.clear();
+    return route;
 }
 
 std::vector<std::string> AirportGraph::createInstructions(
@@ -227,6 +285,14 @@ RouteResult AirportGraph::shortestRoute(const std::string& start,
         return result;
     }
 
+    // A breadth-first traversal is a small, unweighted reachability check.
+    // If no path exists, the class avoids running the weighted search.
+    if (!isReachable(startIndex, destinationIndex))
+    {
+        result.status = DestinationUnreachable;
+        return result;
+    }
+
     const double infinity = std::numeric_limits<double>::infinity();
     std::vector<double> distances(locations_.size(), infinity);
     std::vector<std::size_t> previous(
@@ -276,22 +342,15 @@ RouteResult AirportGraph::shortestRoute(const std::string& start,
         return result;
     }
 
-    std::vector<std::size_t> route;
-    for (std::size_t location = destinationIndex;
-         location != locations_.size();
-         location = previous[location])
-    {
-        route.push_back(location);
-        if (location == startIndex)
-            break;
-    }
-    if (route.empty() || route.back() != startIndex)
+    const std::vector<std::size_t> route =
+        reconstructRoute(startIndex, destinationIndex, previous);
+    if (route.empty())
     {
         result.status = DestinationUnreachable;
         return result;
     }
 
-    for (std::vector<std::size_t>::reverse_iterator location = route.rbegin();
+    for (std::vector<std::size_t>::const_reverse_iterator location = route.rbegin();
          location != route.rend(); ++location)
         result.locations.push_back(locations_[*location].name);
 
