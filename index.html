@@ -1,0 +1,149 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#f5f7fb">
+  <title>AeroTrack | Airport assistance</title>
+  <link rel="stylesheet" href="style.css">
+  <script src="script.js" defer></script>
+</head>
+<body>
+  <header class="site-header">
+    <a class="brand" href="#" aria-label="AeroTrack home">
+      <span class="brand-mark" aria-hidden="true">A</span>
+      <span>AeroTrack<small>Airport assistance</small></span>
+    </a>
+    <div class="demo-label"><span aria-hidden="true"></span> DEMO MODE · SAMPLE DATA</div>
+  </header>
+
+  <main>
+    <section class="intro" aria-labelledby="page-title">
+      <p class="eyebrow">YOUR JOURNEY, MADE EASIER</p>
+      <h1 id="page-title">How can we help?</h1>
+      <p>Search for a missing bag or find your way around the sample airport.</p>
+    </section>
+
+    <div class="workspace">
+      <div class="tabs" role="tablist" aria-label="Airport assistance">
+        <button class="tab is-active" id="baggage-tab" type="button" role="tab"
+                aria-selected="true" aria-controls="baggage-panel" tabindex="0">
+          <span class="tab-icon" aria-hidden="true">▣</span> Find Lost Baggage
+        </button>
+        <button class="tab" id="directions-tab" type="button" role="tab"
+                aria-selected="false" aria-controls="directions-panel" tabindex="-1">
+          <span class="tab-icon" aria-hidden="true">⌖</span> Indoor Airport Directions
+        </button>
+      </div>
+
+      <section class="panel" id="baggage-panel" role="tabpanel"
+               aria-labelledby="baggage-tab" tabindex="0">
+        <div class="panel-heading">
+          <div class="heading-icon bag-icon" aria-hidden="true">▣</div>
+          <div>
+            <p class="eyebrow">BAGGAGE ASSISTANCE</p>
+            <h2>Tell us what you remember</h2>
+            <p class="section-description">Enter one or more details to find matching sample records.</p>
+          </div>
+        </div>
+
+        <form id="baggage-form">
+          <div class="form-grid">
+            <label>
+              <span>Colour</span>
+              <input name="colour" type="search" autocomplete="off" placeholder="e.g. Dark Red">
+            </label>
+            <label>
+              <span>Baggage type</span>
+              <input name="type" type="search" autocomplete="off" placeholder="e.g. Hard-shell">
+            </label>
+            <label>
+              <span>Flight number</span>
+              <input name="flightNumber" type="search" autocomplete="off" placeholder="e.g. AX101">
+            </label>
+            <label>
+              <span>Departure airport</span>
+              <input name="departureAirport" type="search" autocomplete="off" placeholder="e.g. New York">
+            </label>
+            <label>
+              <span>Arrival airport</span>
+              <input name="arrivalAirport" type="search" autocomplete="off" placeholder="e.g. London">
+            </label>
+            <label>
+              <span>Travel date</span>
+              <input name="travelDate" type="search" autocomplete="off" placeholder="e.g. 20-10-2026">
+            </label>
+            <label>
+              <span>Approx. departure time</span>
+              <input name="approximateDepartureTime" type="search" autocomplete="off" placeholder="e.g. 10:30 AM">
+            </label>
+            <label>
+              <span>Approx. arrival time</span>
+              <input name="approximateArrivalTime" type="search" autocomplete="off" placeholder="e.g. 10:20 PM">
+            </label>
+          </div>
+          <div class="form-actions">
+            <button class="button button-primary" type="submit">Search baggage <span aria-hidden="true">→</span></button>
+            <button class="button button-secondary" type="reset">Clear details</button>
+          </div>
+        </form>
+
+        <section class="results-section" aria-labelledby="results-title">
+          <div class="results-heading">
+            <h3 id="results-title">Search results</h3>
+            <span id="result-count" class="result-count" aria-live="polite"></span>
+          </div>
+          <div id="baggage-results" class="results-list" aria-live="polite" aria-atomic="true">
+            <div class="empty-state">
+              <span class="empty-icon" aria-hidden="true">⌕</span>
+              <p>Enter a baggage detail above to get started.</p>
+              <small>Search uses the fictional sample records shown in demo mode.</small>
+            </div>
+          </div>
+        </section>
+      </section>
+
+      <section class="panel" id="directions-panel" role="tabpanel"
+               aria-labelledby="directions-tab" tabindex="0" hidden>
+        <div class="panel-heading">
+          <div class="heading-icon route-icon" aria-hidden="true">⌖</div>
+          <div>
+            <p class="eyebrow">INDOOR DIRECTIONS</p>
+            <h2>Find your way around</h2>
+            <p class="section-description">Choose two locations in the fictional sample airport layout.</p>
+          </div>
+        </div>
+
+        <form id="directions-form">
+          <div class="route-fields">
+            <label>
+              <span>Starting point</span>
+              <select id="route-start" name="start"></select>
+            </label>
+            <span class="route-arrow" aria-hidden="true">→</span>
+            <label>
+              <span>Destination</span>
+              <select id="route-destination" name="destination"></select>
+            </label>
+            <button class="button button-primary route-button" type="submit">Get directions <span aria-hidden="true">→</span></button>
+          </div>
+        </form>
+
+        <div id="route-output" class="route-output" aria-live="polite" aria-atomic="true">
+          <div class="empty-state">
+            <span class="empty-icon" aria-hidden="true">⌖</span>
+            <p>Select a starting point and destination to see your route.</p>
+            <small>Routes use the sample airport corridors and illustrative distances.</small>
+          </div>
+        </div>
+        <p class="notice"><span aria-hidden="true">ⓘ</span> Demo only. This is not a live airport map or positioning service.</p>
+      </section>
+    </div>
+  </main>
+
+  <footer>
+    <span class="footer-mark" aria-hidden="true">A</span>
+    AeroTrack <span class="footer-divider">·</span> Fictional sample data for demonstration
+  </footer>
+</body>
+</html>
